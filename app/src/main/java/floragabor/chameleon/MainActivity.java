@@ -9,6 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -32,13 +35,15 @@ public class MainActivity extends AppCompatActivity {
             "Events"
     };
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GridView gv = (GridView)findViewById(R.id.grid_view);
+        GridView gv = (GridView) findViewById(R.id.grid_view);
+
+//        final Animation anim1 = AnimationUtils.loadAnimation(this, R.anim.scale);
+//        gv.startAnimation(anim1);
 
 
         gv.setAdapter(new IconAdapter(this));
@@ -50,7 +55,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ImageView cham_iv = (ImageView) findViewById(R.id.chameleon_blind_img);
+        ImageView cham_eye_iv = (ImageView) findViewById(R.id.chameleon_eye_img);
+
+        final Animation anim2 = AnimationUtils.loadAnimation(this, R.anim.eye_move);
+        cham_eye_iv.startAnimation(anim2);
+
     }
+
 
     public void goToDetailView(int position){
         Intent intent = new Intent(this, DetailView.class);

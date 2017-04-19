@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public abstract class DetailView extends AppCompatActivity {
+public class DetailView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -14,7 +14,7 @@
 
     <!--Name of category-->
     <TextView
-        android:id="@+id/messageLabel"
+        android:id="@+id/category_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -35,7 +35,7 @@
         android:id="@+id/item_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/messageLabel"
+        android:layout_below="@id/category_tv"
         android:layout_above="@id/plus_button"/>
 
 

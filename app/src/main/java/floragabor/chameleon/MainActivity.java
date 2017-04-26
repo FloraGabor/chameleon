@@ -6,19 +6,15 @@ import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.events_logo
     };
 
-    String[] labels = {
+    String[] category = {
             "Shopping",
             "Work",
             "Ideas",
@@ -69,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToDetailView(int position){
         Intent intent = new Intent(this, DetailView.class);
-        intent.putExtra("message", labels[position]);
+        intent.putExtra("category", category[position]);
         startActivity(intent);
     }
 
@@ -132,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 ImageView iv = (ImageView)view.findViewById(R.id.grid_image);
 
                 iv.setImageResource(iconIDs[position]);
-                tv.setText(labels[position]);
+                tv.setText(category[position]);
             } else {
                 view = convertView;
             }

@@ -12,11 +12,20 @@
     tools:context="floragabor.chameleon.NewItem">
 
     <TextView
+        android:id="@+id/category_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="30dp"
+        android:paddingBottom="20dp"/>
+
+    <TextView
         android:id="@+id/new_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30dp"
         android:text="New Item"
+        android:layout_below="@id/category_tv"
         android:layout_alignParentTop="true"
         android:paddingBottom="20dp"/>
 

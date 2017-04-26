@@ -20,25 +20,26 @@ import java.util.ArrayList;
 
 public class DetailView extends AppCompatActivity {
 
-//    AndroidDBHelper dbHelper;
-//    ArrayAdapter<String> mAdapter;
+    AndroidDBHelper dbHelper;
+    ArrayAdapter<String> mAdapter;
     ListView lv;
+    String category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
 
-//        dbHelper = new AndroidDBHelper(this);
+        dbHelper = new AndroidDBHelper(this);
 
-        TextView tv = (TextView)findViewById(R.id.messageLabel);
+        TextView tv = (TextView)findViewById(R.id.category_tv);
         Intent intent1 = getIntent();
-        String message = intent1.getStringExtra("message");
-        tv.setText(message);
+        category = intent1.getStringExtra("category");
+        tv.setText(category);
 
         lv = (ListView) findViewById(R.id.item_list);
 
-//        loadTaskList();
+        loadTaskList();
 
         Button btn = (Button) findViewById(R.id.plus_button);
 
@@ -52,55 +53,23 @@ public class DetailView extends AppCompatActivity {
 
     }
 
-//    private void loadTaskList() {
-//        ArrayList<String> taskList = dbHelper.getTaskList();
-//        if (mAdapter == null) {
-//            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
-//            lv.setAdapter(mAdapter);
-//        } else {
-//            mAdapter.clear();
-//            mAdapter.addAll(taskList);
-//            mAdapter.notifyDataSetChanged();
-//        }
-//    }
+    private void loadTaskList() {
+        ArrayList<String> taskList = dbHelper.getTaskList(category);
+        if (mAdapter == null) {
+            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
+            lv.setAdapter(mAdapter);
+        } else {
+            mAdapter.clear();
+            mAdapter.addAll(taskList);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu, menu);
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()){
-//            case R.id.action_add_task:
-//                final EditText taskEditText = new EditText(this);
-//                AlertDialog dialog = new AlertDialog.Builder(this)
-//                        .setTitle("Add New Item")
-//                        .setMessage("Anything to add?")
-//                        .setView(taskEditText)
-//                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                String task = String.valueOf(taskEditText.getText());
-//                                dbHelper.insertNewTask(task);
-//                                loadTaskList();
-//                            }
-//                        })
-//                        .setNegativeButton("Cancel", null)
-//                        .create();
-//                dialog.show();
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
-//    public void deleteTask(View view) {
-//        View parent = (View) view.getParent();
-//        TextView taskTextView = (TextView) findViewById(R.id.item_text_view);
-//        String task = String.valueOf(taskTextView.getText());
-//        dbHelper.deleteTask(task);
-//        loadTaskList();
-//    }
+    public void deleteTask(long id) {
+        TextView taskTextView = (TextView) findViewById(R.id.item_text_view);
+        id = taskTextView.getId();
+        dbHelper.deleteTask(id);
+        loadTaskList();
+    }
 }

@@ -40,15 +40,15 @@ public class DetailView extends AppCompatActivity {
 
         loadTaskList();
 
-//        Button btn = (Button) findViewById(R.id.plus_button);
-//
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent2 = new Intent(DetailView.this, NewItem.class);
-//                DetailView.this.startActivity(intent2);
-//            }
-//        });
+        Button btn = (Button) findViewById(R.id.plus_button);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(DetailView.this, NewItem.class);
+                DetailView.this.startActivity(intent2);
+            }
+        });
 
     }
 
@@ -64,37 +64,37 @@ public class DetailView extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_add_task:
-                final EditText taskEditText = new EditText(this);
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("Add New Item")
-                        .setMessage("Anything to add?")
-                        .setView(taskEditText)
-                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String task = String.valueOf(taskEditText.getText());
-                                dbHelper.insertNewTask(task);
-                                loadTaskList();
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .create();
-                dialog.show();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()){
+//            case R.id.action_add_task:
+//                final EditText taskEditText = new EditText(this);
+//                AlertDialog dialog = new AlertDialog.Builder(this)
+//                        .setTitle("Add New Item")
+//                        .setMessage("Anything to add?")
+//                        .setView(taskEditText)
+//                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                String task = String.valueOf(taskEditText.getText());
+//                                dbHelper.insertNewTask(task);
+//                                loadTaskList();
+//                            }
+//                        })
+//                        .setNegativeButton("Cancel", null)
+//                        .create();
+//                dialog.show();
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     public void deleteTask(View view) {
         View parent = (View) view.getParent();

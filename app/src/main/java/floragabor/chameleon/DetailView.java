@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 public class DetailView extends AppCompatActivity {
 
-    AndroidDBHelper dbHelper;
-    ArrayAdapter<String> mAdapter;
+//    AndroidDBHelper dbHelper;
+//    ArrayAdapter<String> mAdapter;
     ListView lv;
 
     @Override
@@ -29,7 +29,7 @@ public class DetailView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
 
-        dbHelper = new AndroidDBHelper(this);
+//        dbHelper = new AndroidDBHelper(this);
 
         TextView tv = (TextView)findViewById(R.id.messageLabel);
         Intent intent1 = getIntent();
@@ -38,7 +38,7 @@ public class DetailView extends AppCompatActivity {
 
         lv = (ListView) findViewById(R.id.item_list);
 
-        loadTaskList();
+//        loadTaskList();
 
         Button btn = (Button) findViewById(R.id.plus_button);
 
@@ -52,17 +52,17 @@ public class DetailView extends AppCompatActivity {
 
     }
 
-    private void loadTaskList() {
-        ArrayList<String> taskList = dbHelper.getTaskList();
-        if (mAdapter == null) {
-            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
-            lv.setAdapter(mAdapter);
-        } else {
-            mAdapter.clear();
-            mAdapter.addAll(taskList);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
+//    private void loadTaskList() {
+//        ArrayList<String> taskList = dbHelper.getTaskList();
+//        if (mAdapter == null) {
+//            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
+//            lv.setAdapter(mAdapter);
+//        } else {
+//            mAdapter.clear();
+//            mAdapter.addAll(taskList);
+//            mAdapter.notifyDataSetChanged();
+//        }
+//    }
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,11 +96,11 @@ public class DetailView extends AppCompatActivity {
 //        return super.onOptionsItemSelected(item);
 //    }
 
-    public void deleteTask(View view) {
-        View parent = (View) view.getParent();
-        TextView taskTextView = (TextView) findViewById(R.id.item_text_view);
-        String task = String.valueOf(taskTextView.getText());
-        dbHelper.deleteTask(task);
-        loadTaskList();
-    }
+//    public void deleteTask(View view) {
+//        View parent = (View) view.getParent();
+//        TextView taskTextView = (TextView) findViewById(R.id.item_text_view);
+//        String task = String.valueOf(taskTextView.getText());
+//        dbHelper.deleteTask(task);
+//        loadTaskList();
+//    }
 }

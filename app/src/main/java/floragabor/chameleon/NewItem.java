@@ -27,13 +27,13 @@ public class NewItem extends AppCompatActivity {
 
         final EditText et = (EditText) findViewById(R.id.new_item_edit);
 
-        add_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String edit_item = String.valueOf(et.getText());
-                dbHelper.insertNewTask(edit_item);
-            }
-        });
+//        add_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String edit_item = String.valueOf(et.getText());
+//                dbHelper.insertNewTask(edit_item);
+//            }
+//        });
 
     }
 }

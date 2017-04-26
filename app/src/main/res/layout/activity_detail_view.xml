@@ -25,20 +25,10 @@
     <!--CheckBox needed-->
 
 
-    <Button
-        android:id="@+id/plus_button"
-        android:background="@drawable/plus_sign"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        />
-
     <ListView
         android:id="@+id/item_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/plus_button"
         android:layout_below="@id/messageLabel"/>
 
 </RelativeLayout>

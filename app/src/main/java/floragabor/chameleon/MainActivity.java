@@ -2,6 +2,7 @@ package floragabor.chameleon;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
             "Ideas",
             "Events"
     };
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 //        return super.onOptionsItemSelected(item);
 //    }
 
+
     public class IconAdapter extends BaseAdapter{
 
         private Context context;
@@ -120,6 +124,11 @@ public class MainActivity extends AppCompatActivity {
                 view = inflater.inflate(R.layout.tile, null);
 
                 TextView tv = (TextView)view.findViewById(R.id.grid_text);
+                Typeface externalFont = Typeface.createFromAsset(getAssets(), "fonts/Fonty.ttf");
+                tv.setTypeface(externalFont);
+                tv.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
+
+
                 ImageView iv = (ImageView)view.findViewById(R.id.grid_image);
 
                 iv.setImageResource(iconIDs[position]);

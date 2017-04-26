@@ -15,10 +15,12 @@ import java.util.ArrayList;
 
 public class AndroidDBHelper extends SQLiteOpenHelper {
 
+
+
     public static final String DB_NAME = "ToDoDB";
     public static final int DB_VERSION = 1;
     public static final String TABLE_NAME = "ToDoList";
-    public static final String DB_COLUMN = "Items";
+    public static final String DB_COLUMN = "Task";
 
 
     public AndroidDBHelper(Context context){

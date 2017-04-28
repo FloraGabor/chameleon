@@ -39,7 +39,7 @@ public class AndroidDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String query = String.format("DELETE TABLE IF EXISTS %s", TABLE_NAME);
+        String query = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
         db.execSQL(query);
         onCreate(db);
     }

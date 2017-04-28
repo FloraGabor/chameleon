@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.events_logo
     };
 
-    String[] category = {
+    static String[] category = {
             "Shopping",
             "Work",
             "Ideas",

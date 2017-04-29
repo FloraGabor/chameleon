@@ -3,6 +3,7 @@ package floragabor.chameleon;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,9 @@ public class NewItem extends AppCompatActivity {
         category = getIntent().getStringExtra("category");
         final TextView cat_tv = (TextView) findViewById(R.id.category_tv);
         cat_tv.setText(category);
+        Typeface externalFont = Typeface.createFromAsset(getAssets(), "fonts/Fonty.ttf");
+        cat_tv.setTypeface(externalFont);
+        cat_tv.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
 
 
         Button add_btn = (Button) findViewById(R.id.add_button);
@@ -36,6 +40,9 @@ public class NewItem extends AppCompatActivity {
 
 
         TextView tv = (TextView) findViewById(R.id.new_item_title);
+        externalFont = Typeface.createFromAsset(getAssets(), "fonts/Fonty.ttf");
+        tv.setTypeface(externalFont);
+        tv.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
 
         final EditText et = (EditText) findViewById(R.id.new_item_edit);
 
@@ -50,7 +57,7 @@ public class NewItem extends AppCompatActivity {
                 } else {
                     dbInsertAsyncTask insertAsyncTask = new dbInsertAsyncTask(NewItem.this);
                     insertAsyncTask.execute("insert_item", edit_item, category);
-                    return;
+                    finish();
                 }
 
             }

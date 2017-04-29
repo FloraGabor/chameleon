@@ -2,6 +2,7 @@ package floragabor.chameleon;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 public class DetailView extends AppCompatActivity {
 
     AndroidDBHelper dbHelper;
+    ArrayList<String> taskList;
     ArrayAdapter<String> mAdapter;
     ListView lv;
     String cat;
+    Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +32,20 @@ public class DetailView extends AppCompatActivity {
         setContentView(R.layout.activity_detail_view);
 
         cat = getIntent().getStringExtra("category");
-        TextView cat_tv = (TextView)findViewById(R.id.category_tv);
+        TextView cat_tv = (TextView) findViewById(R.id.category_tv);
         cat_tv.setText(cat);
+        Typeface externalFont = Typeface.createFromAsset(getAssets(), "fonts/Fonty.ttf");
+        cat_tv.setTypeface(externalFont);
+        cat_tv.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
 
 
 //        dbHelper = new AndroidDBHelper(this);
 
         lv = (ListView) findViewById(R.id.item_list);
 
-        try{
-            loadTaskList();
-        } catch (NullPointerException n){System.out.println("No item.");}
+//        try{
+//            loadTaskList();
+//        } catch (NullPointerException n){System.out.println("No item.");}
 
 
         Button btn = (Button) findViewById(R.id.plus_button);
@@ -54,65 +60,53 @@ public class DetailView extends AppCompatActivity {
         });
 
 
-
-
+//        ViewHolder holder = new ViewHolder();
+//        holder.listItem = (TextView)convertView.findViewById(R.id.item_text_view);
+//        holder.deleteButton = (Button)convertView.findViewById(R.id.btnDelete);
+//        convertView.setTag(holder);
 
     }
 
-    public class listAdapter extends BaseAdapter{
-
-        private Context context;
-
-        public listAdapter(Context ctx){
-            context = ctx;
-        }
-
-        @Override
-        public int getCount() {
-            return 0;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder;
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            if(convertView == null){
-                viewHolder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.item_list_view, null);
-                viewHolder.listItem = (TextView)convertView.findViewById(R.id.item_text_view);
-                viewHolder.deleteButton = (Button)convertView.findViewById(R.id.btnDelete);
-                convertView.setTag(viewHolder);
-
-            } else {
-                viewHolder = (ViewHolder)convertView.getTag();
-            }
-
-            // ide hiányzik még valami
-
-
-            return convertView;
-
-        }
-    }
-
-    static class ViewHolder{
+    class ViewHolder {
         private TextView listItem;
         private Button deleteButton;
+
+        ViewHolder(View v) {
+            listItem = (TextView) v.findViewById(R.id.item_text_view);
+            deleteButton = (Button) v.findViewById(R.id.btnDelete);
+        }
     }
 
+
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View row = convertView;
+        ViewHolder viewHolder = null;
+        final long id = viewHolder.listItem.getId();
+        if (row == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            row = inflater.inflate(R.layout.item_list_view, parent, false);
+            viewHolder = new ViewHolder(row);
+            row.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) row.getTag();
+        }
+
+        viewHolder.listItem.setText(dbHelper.DB_COLUMN_TEXT);
+        viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteTask(id);
+            }
+        });
+
+
+        return row;
+
+    }
+
+
     private void loadTaskList() {
-        ArrayList<String> taskList = dbHelper.getTaskList(cat);
+        taskList = dbHelper.getTaskList(cat);
         if (mAdapter == null) {
             mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
             lv.setAdapter(mAdapter);
@@ -121,6 +115,7 @@ public class DetailView extends AppCompatActivity {
             mAdapter.addAll(taskList);
             mAdapter.notifyDataSetChanged();
         }
+        dbHelper.close();
     }
 
 
@@ -129,5 +124,6 @@ public class DetailView extends AppCompatActivity {
         id = taskTextView.getId();
         dbHelper.deleteTask(id);
         loadTaskList();
+        dbHelper.close();
     }
 }

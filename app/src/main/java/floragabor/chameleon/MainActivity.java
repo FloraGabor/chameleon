@@ -2,6 +2,7 @@ package floragabor.chameleon;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         cham_eye_iv.startAnimation(anim2);
 
     }
-
 
     public void goToDetailView(int position){
         Intent intent = new Intent(this, DetailView.class);

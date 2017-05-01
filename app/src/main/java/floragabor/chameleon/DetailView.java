@@ -25,6 +25,7 @@ public class DetailView extends AppCompatActivity {
     ListView lv;
     String cat;
     Context context = this;
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +61,12 @@ public class DetailView extends AppCompatActivity {
         });
 
 
-//        ViewHolder holder = new ViewHolder();
-//        holder.listItem = (TextView)convertView.findViewById(R.id.item_text_view);
-//        holder.deleteButton = (Button)convertView.findViewById(R.id.btnDelete);
-//        convertView.setTag(holder);
-
     }
 
     class ViewHolder {
         private TextView listItem;
         private Button deleteButton;
+        int position;
 
         ViewHolder(View v) {
             listItem = (TextView) v.findViewById(R.id.item_text_view);
@@ -105,25 +102,25 @@ public class DetailView extends AppCompatActivity {
     }
 
 
-    private void loadTaskList() {
-        taskList = dbHelper.getTaskList(cat);
-        if (mAdapter == null) {
-            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
-            lv.setAdapter(mAdapter);
-        } else {
-            mAdapter.clear();
-            mAdapter.addAll(taskList);
-            mAdapter.notifyDataSetChanged();
-        }
-        dbHelper.close();
-    }
+//    private void loadTaskList() {
+//        taskList = dbHelper.getTaskList(cat);
+//        if (mAdapter == null) {
+//            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
+//            lv.setAdapter(mAdapter);
+//        } else {
+//            mAdapter.clear();
+//            mAdapter.addAll(taskList);
+//            mAdapter.notifyDataSetChanged();
+//        }
+//        dbHelper.close();
+//    }
 
 
     public void deleteTask(long id) {
         TextView taskTextView = (TextView) findViewById(R.id.item_text_view);
         id = taskTextView.getId();
         dbHelper.deleteTask(id);
-        loadTaskList();
+//        loadTaskList();
         dbHelper.close();
     }
 }

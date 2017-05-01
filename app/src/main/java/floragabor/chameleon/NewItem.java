@@ -42,7 +42,7 @@ public class NewItem extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.new_item_title);
         externalFont = Typeface.createFromAsset(getAssets(), "fonts/Fonty.ttf");
         tv.setTypeface(externalFont);
-        tv.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
+        tv.setTextSize(getResources().getDimension(R.dimen.NewItemTextSize));
 
         final EditText et = (EditText) findViewById(R.id.new_item_edit);
 

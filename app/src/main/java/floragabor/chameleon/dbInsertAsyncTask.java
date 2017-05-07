@@ -5,14 +5,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import floragabor.chameleon.entity.ReminderItem;
+
 /**
  * Created by O.o on 2017. 04. 28..
  */
 
-public class dbInsertAsyncTask extends AsyncTask<String, String, String> {
+public class DBInsertAsyncTask extends AsyncTask<String, String, String> {
     Context ctx;
 
-    dbInsertAsyncTask (Context ctx){
+    DBInsertAsyncTask(Context ctx){
         this.ctx = ctx;
     }
 
@@ -29,15 +31,15 @@ public class dbInsertAsyncTask extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
 
-        String method = params[0];
-        AndroidDBHelper dbHelper = new AndroidDBHelper(ctx);
-        if(method.equals("insert_item")){
-            String edit_item = params[1];
-            String category = params[2];
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            dbHelper.insertNewTask(edit_item, category);
-            return "Item inserted.";
-        }
+//        ReminderItem method = params[0];
+//        AndroidDBHelper dbHelper = new AndroidDBHelper(ctx);
+//        if(method.equals("insert_item")){
+//            String edit_item = params[1];
+//            String category = params[2];
+//            SQLiteDatabase db = dbHelper.getWritableDatabase();
+//            dbHelper.insertNewTask(edit_item, category);
+//            return "ReminderItem inserted.";
+//        }
         return null;
     }
 }

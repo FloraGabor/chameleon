@@ -1,25 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
 
     <Button
         android:id="@+id/btnDelete"
+        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:background="@drawable/selector_del"
         android:onClick="deleteTask (DetailView)"
         android:text="DELETE" />
 
     <TextView
+        android:id="@+id/duedate_text_view"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnDelete"
+        android:layout_alignBottom="@+id/btnDelete"
+        android:layout_toLeftOf="@+id/btnDelete"
+        android:layout_toStartOf="@+id/btnDelete" />
+
+    <TextView
         android:id="@+id/item_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/btnDelete"
-        android:layout_alignParentLeft="true"
-        android:text="Example" />
-
+        android:gravity="center_vertical"
+        android:text="ReminderItem Text Example"
+        android:layout_alignBaseline="@id/duedate_text_view"
+        android:layout_alignParentLeft="true" />
 
 
 </RelativeLayout>

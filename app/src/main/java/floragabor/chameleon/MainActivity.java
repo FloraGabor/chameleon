@@ -2,8 +2,8 @@ package floragabor.chameleon;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,7 +17,14 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import floragabor.chameleon.fragment.ReminderItemListFragment;
+
 public class MainActivity extends AppCompatActivity {
+
+    private List<Fragment> fragments = new ArrayList<>();
 
     Integer[] iconIDs = {
             R.drawable.shopping_logo,
@@ -34,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,16 +48,14 @@ public class MainActivity extends AppCompatActivity {
 
         GridView gv = (GridView) findViewById(R.id.grid_view);
 
-//        final Animation anim1 = AnimationUtils.loadAnimation(this, R.anim.scale);
-//        gv.startAnimation(anim1);
-
 
         gv.setAdapter(new IconAdapter(this));
 
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                goToDetailView(position);
+                //goToDetailView(position); //commented
+                showList((String) view.getTag());
             }
         });
 
@@ -63,35 +67,75 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void goToDetailView(int position){
+    public void goToDetailView(int position) {
         Intent intent = new Intent(this, DetailView.class);
         intent.putExtra("category", category[position]);
         startActivity(intent);
+
+        getSupportFragmentManager().popBackStack();
+    }
+
+    private void showList(String category) {
+        ReminderItemListFragment fragment = new ReminderItemListFragment();
+        Bundle args = new Bundle();
+        args.putString(Constans.ARG_CATEGORY, category);
+        fragment.setArguments(args);
+
+        addFragment(fragment);
+//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit(); //commented
+    }
+
+    public void addFragment(Fragment fragment) {
+        fragments.add(fragment);
+
+        int size = fragments.size();
+        showFragment(fragments.get(size - 1));
+    }
+
+    private void removeFragment(Fragment fragment) {
+        if (fragments.size() > 1) {
+            int size = fragments.size();
+            replaceFragment(fragments.get(size - 2));
+        } else if (fragments.size() > 0) {
+            int size = fragments.size();
+            removeFragment(fragments.get(size - 1));
+        } else {
+
+            fragments.remove(fragment);
+        }
+    }
+
+    private void showFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+    }
+
+    public void hideFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
     }
 
 //    @Override
-//    public boolean onCreateOptionsMenu (Menu menu){
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemsSelected(MenuItem item) {
-//        int id = item.getItemId();
+//    public void onBackPressed() {
 //
-//        if(id == R.id.action_settings) {
-//            return true;
+//        //int count = getSupportFragmentManager().getBackStackEntryCount(); //commented!!
+//
+//        if (fragments.size() > 0) {
+//            removeFragment(fragments.get(fragments.size() - 1));
+//            //getSupportFragmentManager().popBackStack(); //commented!!
+//        } else {
+//            super.onBackPressed();
 //        }
-//
-//        return super.onOptionsItemSelected(item);
 //    }
 
 
-    public class IconAdapter extends BaseAdapter{
+    public class IconAdapter extends BaseAdapter {
 
         private Context context;
 
-        public IconAdapter(Context ctx){
+        public IconAdapter(Context ctx) {
             context = ctx;
         }
 
@@ -113,22 +157,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view;
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            if(convertView == null){
+            if (convertView == null) {
                 view = new View(context);
                 view = inflater.inflate(R.layout.tile, null);
 
-                TextView tv = (TextView)view.findViewById(R.id.grid_text);
+                TextView tv = (TextView) view.findViewById(R.id.grid_text);
                 Typeface externalFont = Typeface.createFromAsset(getAssets(), "fonts/Fonty.ttf");
                 tv.setTypeface(externalFont);
                 tv.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
 
 
-                ImageView iv = (ImageView)view.findViewById(R.id.grid_image);
+                ImageView iv = (ImageView) view.findViewById(R.id.grid_image);
 
                 iv.setImageResource(iconIDs[position]);
                 tv.setText(category[position]);
+                view.setTag(category[position]);
             } else {
                 view = convertView;
             }

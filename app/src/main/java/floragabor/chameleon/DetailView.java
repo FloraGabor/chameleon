@@ -5,13 +5,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,8 +15,8 @@ import java.util.ArrayList;
 
 public class DetailView extends AppCompatActivity {
 
-    AndroidDBHelper dbHelper;
     ArrayList<String> taskList;
+    AndroidDBHelper dbHelper;
     ArrayAdapter<String> mAdapter;
     ListView lv;
     String cat;
@@ -30,7 +26,7 @@ public class DetailView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_view);
+        setContentView(R.layout.fragment_detail_view);
 
         cat = getIntent().getStringExtra("category");
         TextView cat_tv = (TextView) findViewById(R.id.category_tv);
@@ -60,67 +56,22 @@ public class DetailView extends AppCompatActivity {
             }
         });
 
-
-    }
-
-    class ViewHolder {
-        private TextView listItem;
-        private Button deleteButton;
-        int position;
-
-        ViewHolder(View v) {
-            listItem = (TextView) v.findViewById(R.id.item_text_view);
-            deleteButton = (Button) v.findViewById(R.id.btnDelete);
-        }
     }
 
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        ViewHolder viewHolder = null;
-        final long id = viewHolder.listItem.getId();
-        if (row == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.item_list_view, parent, false);
-            viewHolder = new ViewHolder(row);
-            row.setTag(viewHolder);
+    private void loadTaskList() {
+        //taskList = dbHelper.getTaskList(cat);
+        if (mAdapter == null) {
+            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
+            lv.setAdapter(mAdapter);
         } else {
-            viewHolder = (ViewHolder) row.getTag();
+            mAdapter.clear();
+            mAdapter.addAll(taskList);
+            mAdapter.notifyDataSetChanged();
         }
-
-        viewHolder.listItem.setText(dbHelper.DB_COLUMN_TEXT);
-        viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteTask(id);
-            }
-        });
-
-
-        return row;
-
-    }
-
-
-//    private void loadTaskList() {
-//        taskList = dbHelper.getTaskList(cat);
-//        if (mAdapter == null) {
-//            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
-//            lv.setAdapter(mAdapter);
-//        } else {
-//            mAdapter.clear();
-//            mAdapter.addAll(taskList);
-//            mAdapter.notifyDataSetChanged();
-//        }
-//        dbHelper.close();
-//    }
-
-
-    public void deleteTask(long id) {
-        TextView taskTextView = (TextView) findViewById(R.id.item_text_view);
-        id = taskTextView.getId();
-        dbHelper.deleteTask(id);
-//        loadTaskList();
         dbHelper.close();
     }
+
+
+
 }

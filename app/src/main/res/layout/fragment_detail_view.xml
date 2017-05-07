@@ -21,7 +21,6 @@
         android:textSize="30dp"
         android:paddingBottom="20dp"/>
 
-
     <Button
         android:id="@+id/plus_button"
         android:layout_width="80dp"

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CategoryStyle" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/dark_green</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:textStyle">normal</item>
+    <style name="CategoryStyle">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">25sp</item>
     </style>
-    <dimen name="CategoryTextSize">25sp</dimen>
     <dimen name="NewItemTextSize">20sp</dimen>
 </resources>

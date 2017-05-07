@@ -3,6 +3,7 @@ package floragabor.chameleon;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,65 +14,51 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import floragabor.chameleon.fragment.ReminderItemListFragment;
+
 public class DetailView extends AppCompatActivity {
 
-    ArrayList<String> taskList;
-    AndroidDBHelper dbHelper;
-    ArrayAdapter<String> mAdapter;
-    ListView lv;
-    String cat;
-    Context context = this;
-    int position;
+    private String cat;
+
+    public void setNewItemFragment(Fragment newItemFragment) {
+        this.newItemFragment = newItemFragment;
+    }
+
+    private Fragment newItemFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_detail_view);
+        setContentView(R.layout.activity_detail);
 
-        cat = getIntent().getStringExtra("category");
-        TextView cat_tv = (TextView) findViewById(R.id.category_tv);
-        cat_tv.setText(cat);
-        Typeface externalFont = Typeface.createFromAsset(getAssets(), "fonts/Fonty.ttf");
-        cat_tv.setTypeface(externalFont);
-        cat_tv.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
+        cat = getIntent().getStringExtra(Constans.ARG_CATEGORY);
 
-
-//        dbHelper = new AndroidDBHelper(this);
-
-        lv = (ListView) findViewById(R.id.item_list);
-
-//        try{
-//            loadTaskList();
-//        } catch (NullPointerException n){System.out.println("No item.");}
-
-
-        Button btn = (Button) findViewById(R.id.plus_button);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(DetailView.this, NewItem.class);
-                intent2.putExtra("category", cat);
-                DetailView.this.startActivity(intent2);
-            }
-        });
-
+        showListFragment();
     }
 
+    private void showListFragment() {
+        ReminderItemListFragment fragment1 = new ReminderItemListFragment();
+        Bundle args = new Bundle();
+        args.putString(Constans.ARG_CATEGORY, cat);
+        fragment1.setArguments(args);
 
-    private void loadTaskList() {
-        //taskList = dbHelper.getTaskList(cat);
-        if (mAdapter == null) {
-            mAdapter = new ArrayAdapter<String>(this, R.layout.item_list_view, R.id.item_text_view);
-            lv.setAdapter(mAdapter);
-        } else {
-            mAdapter.clear();
-            mAdapter.addAll(taskList);
-            mAdapter.notifyDataSetChanged();
+        getSupportFragmentManager().beginTransaction().
+                replace(R.id.fragment_container, fragment1).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        boolean visible = false;
+        if(newItemFragment != null) {
+            visible = newItemFragment.isVisible();
         }
-        dbHelper.close();
+
+        if(visible) {
+            showListFragment();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
-
-
-
 }

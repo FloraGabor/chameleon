@@ -1,6 +1,7 @@
 package floragabor.chameleon;
 
 import android.content.Context;
+import android.icu.util.GregorianCalendar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -91,10 +93,12 @@ public class MyAdapter extends BaseAdapter {
 
         ReminderItem reminderItem = reminderItems.get(position);
         final long id = reminderItem.id;
-        if(reminderItem.dueDate != 0000000000) {
-            Date date = new Date(reminderItem.dueDate);
+        if(reminderItem.dueDate != 0) {
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(reminderItem.dueDate);
+
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            String dueDateString = formatter.format(date);
+            String dueDateString = formatter.format(c.getTime());
             viewHolder.dueDateText.setText(dueDateString);
         }
 

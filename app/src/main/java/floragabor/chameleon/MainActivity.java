@@ -1,11 +1,27 @@
 package floragabor.chameleon;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.os.EnvironmentCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +32,17 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import floragabor.chameleon.fragment.ReminderItemListFragment;
+import static android.R.attr.bitmap;
 
 public class MainActivity extends AppCompatActivity {
-
-    private List<Fragment> fragments = new ArrayList<>();
 
     Integer[] iconIDs = {
             R.drawable.shopping_logo,
@@ -40,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             "Events"
     };
 
+    private ImageView imgBackground;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //goToDetailView(position); //commented
-                showList((String) view.getTag());
+                goToDetailView(category[position]);
             }
         });
 
@@ -65,71 +83,160 @@ public class MainActivity extends AppCompatActivity {
         final Animation anim2 = AnimationUtils.loadAnimation(this, R.anim.eye_move);
         cham_eye_iv.startAnimation(anim2);
 
+        ImageView btnCamera = (ImageView) findViewById(R.id.btnCamera);
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callCameraApp();
+            }
+        });
+
+        imgBackground = (ImageView) findViewById(R.id.imgBackground);
+
+        showBackground();
     }
 
-    public void goToDetailView(int position) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constans.REQUEST_CODE_TAKE_PICTURE && resultCode == Activity.RESULT_OK) {
+            showBackground();
+        }
+    }
+
+    private static Bitmap rotateImage(Bitmap img, int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+        img.recycle();
+        return rotatedImg;
+    }
+
+    private int getOrientation() {
+
+        ExifInterface ei = null;
+        try {
+            ei = new ExifInterface(getPhotoPath());
+        } catch (IOException e) {
+            return 0;
+        }
+
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED);
+
+        switch(orientation) {
+
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return 90;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return 180;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return 270;
+            case ExifInterface.ORIENTATION_NORMAL:
+            default:
+                return 0;
+        }
+    }
+
+    private void showBackground() {
+        String photoPath = getPhotoPath();
+        if(photoPath.isEmpty()) {
+            return;
+        }
+        Bitmap bitmap = decodeSampledBitmapFromResource(photoPath, 400, 400);
+        imgBackground.setImageBitmap(rotateImage(bitmap, getOrientation()));
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(String photoPath,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(photoPath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(photoPath);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(requestCode == Constans.REQUEST_EXTERNAL_STORAGE_RESULT) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                callCameraApp();
+            } else {
+                Toast.makeText(this,
+                        "External write permission has not been granted, cannot saved images",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void callCameraApp() {
+        Intent callCameraApplicationIntent = new Intent();
+        callCameraApplicationIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photoFile = createImageFile();
+        callCameraApplicationIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+        startActivityForResult(callCameraApplicationIntent, Constans.REQUEST_CODE_TAKE_PICTURE);
+    }
+
+    private File createImageFile() {
+        String filePath = getPhotoPath();
+        File file = new File(filePath);
+        if(file.exists()) {
+            return file;
+        } else {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File myDir = new File(root + "/saved_images");
+            myDir.mkdirs();
+            String fname = "Image-background.jpg";
+            File photoFile = new File(myDir, fname);
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Constans.PREF_PHOTO_PATH, photoFile.getAbsolutePath()).commit();
+            return photoFile;
+        }
+    }
+
+    @NonNull
+    private String getPhotoPath() {
+        return PreferenceManager.getDefaultSharedPreferences(this).getString(Constans.PREF_PHOTO_PATH,"");
+    }
+
+    public void goToDetailView(String category) {
         Intent intent = new Intent(this, DetailView.class);
-        intent.putExtra("category", category[position]);
+        intent.putExtra(Constans.ARG_CATEGORY, category);
         startActivity(intent);
 
         getSupportFragmentManager().popBackStack();
     }
-
-    private void showList(String category) {
-        ReminderItemListFragment fragment = new ReminderItemListFragment();
-        Bundle args = new Bundle();
-        args.putString(Constans.ARG_CATEGORY, category);
-        fragment.setArguments(args);
-
-        addFragment(fragment);
-//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit(); //commented
-    }
-
-    public void addFragment(Fragment fragment) {
-        fragments.add(fragment);
-
-        int size = fragments.size();
-        showFragment(fragments.get(size - 1));
-    }
-
-    private void removeFragment(Fragment fragment) {
-        if (fragments.size() > 1) {
-            int size = fragments.size();
-            replaceFragment(fragments.get(size - 2));
-        } else if (fragments.size() > 0) {
-            int size = fragments.size();
-            removeFragment(fragments.get(size - 1));
-        } else {
-
-            fragments.remove(fragment);
-        }
-    }
-
-    private void showFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-    }
-
-    public void hideFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-    }
-
-//    @Override
-//    public void onBackPressed() {
-//
-//        //int count = getSupportFragmentManager().getBackStackEntryCount(); //commented!!
-//
-//        if (fragments.size() > 0) {
-//            removeFragment(fragments.get(fragments.size() - 1));
-//            //getSupportFragmentManager().popBackStack(); //commented!!
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
-
 
     public class IconAdapter extends BaseAdapter {
 
@@ -166,7 +273,6 @@ public class MainActivity extends AppCompatActivity {
                 TextView tv = (TextView) view.findViewById(R.id.grid_text);
                 Typeface externalFont = Typeface.createFromAsset(getAssets(), "fonts/Fonty.ttf");
                 tv.setTypeface(externalFont);
-                tv.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
 
 
                 ImageView iv = (ImageView) view.findViewById(R.id.grid_image);

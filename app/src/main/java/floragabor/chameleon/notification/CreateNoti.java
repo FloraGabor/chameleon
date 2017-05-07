@@ -19,7 +19,7 @@ public class CreateNoti extends AppCompatActivity {
 
     ReminderItem reminderItem;
 //    long notiTime = reminderItem.dueDate - 70740;
-    long currentTime = (long)(System.currentTimeMillis()/1000L);
+    long currentTime = (long)(System.currentTimeMillis() + 5000);
 
     long notiTime = currentTime;
 
@@ -27,15 +27,15 @@ public class CreateNoti extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, NotiService.class);
+        Intent intent = new Intent(this, NotificationBroadcast.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 001, intent, 0);
 
         AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, notiTime, pendingIntent);
 
-        if (notiTime == currentTime){
-            startService(new Intent(this, NotiService.class));
-        }
+//        if (notiTime == currentTime){
+//            startService(new Intent(this, NotiService.class));
+//        }
 
     }
 }

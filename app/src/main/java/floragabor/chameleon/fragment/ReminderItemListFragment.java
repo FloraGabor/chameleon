@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,6 +35,7 @@ public class ReminderItemListFragment extends Fragment implements MyAdapter.Item
 
     private TextView tvCategory;
     private Button btnAdd;
+    private Button btnRefresh;
     private ListView lvReminderItems;
     private AndroidDBHelper dbHelper;
     private MyAdapter mAdapter;
@@ -61,7 +64,9 @@ public class ReminderItemListFragment extends Fragment implements MyAdapter.Item
         tvCategory = (TextView) root.findViewById(R.id.category_tv);
         tvCategory.setText(category);
         btnAdd = (Button) root.findViewById(R.id.plus_button);
+        btnRefresh = (Button) root.findViewById(R.id.btnRefresh);
         lvReminderItems = (ListView) root.findViewById(R.id.item_list);
+
 
         return root;
     }
@@ -72,27 +77,31 @@ public class ReminderItemListFragment extends Fragment implements MyAdapter.Item
 
         Typeface externalFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Fonty.ttf");
         tvCategory.setTypeface(externalFont);
-        tvCategory.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
+//        tvCategory.setTextSize(getResources().getDimension(R.dimen.CategoryTextSize));
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent2 = new Intent(DetailView.this, NewItem.class);
-//                intent2.putExtra("category", cat);
-//                DetailView.this.startActivity(intent2);
 
-                NewItemFragment fragment = new NewItemFragment();
+                NewItemFragment fragment2 = new NewItemFragment();
                 Bundle args = new Bundle();
                 args.putString(Constans.ARG_CATEGORY, category);
-                fragment.setArguments(args);
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).addFragment(fragment);
-                }
-                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+                fragment2.setArguments(args);
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment2).commit();
             }
         });
 
         loadTaskList();
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onResume();
+                Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.clockwise);
+                btnRefresh.startAnimation(rotate);
+            }
+        });
     }
 
     @Override

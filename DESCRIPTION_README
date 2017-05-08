@@ -1,0 +1,2 @@
+# chameleon
+A Chameleon alkalmazás egy teendők-lista, és egy jegyzet-lista egyben. Vásárlás, munka, ötletek és események kategóriában lehet elmenteni listaelemeket. A kezdőoldalon a bal alsó sarokban található kamera ikonnal módosítható a kezdőoldal háttere, ezzel is személyesebbé téve az applikációt. Az elemek hozzáadásánál beállítható az adott listaelemhez egy időpont, mely ha több mint fél óra múlva esedékes, akkor az esemény előtt fél órával értesít, ha viszont fél órán belül lesz az esemény, akkor az esemény időpontjában küld értesítést.
